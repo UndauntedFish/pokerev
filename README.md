@@ -1,2 +1,2 @@
 # pypoker
-This python script simulates a game of poker on the command line.
+This python script simulates a game of Texas Hold'em poker on the command line.
