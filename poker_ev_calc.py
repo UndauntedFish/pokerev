@@ -72,7 +72,7 @@ class TexasHoldemGame:
         flop_turn_river = self.generate_flop_turn_river(opponent_hands)
 
         # Determine if player hand is a winning hand
-        player_hand_is_win = hand_is_win(hand, flop_turn_river)
+        #player_hand_is_win = hand_is_win(hand, flop_turn_river)
 
         # Determine if opponents hand are winning hands
 
@@ -140,7 +140,7 @@ class TexasHoldemGame:
         else:
             return random.choice(self.deck)
 
-
+    '''
     # Determine if a hand is a win
     def hand_is_win(self, player_hand: List(str), opponent_hands: List(str), flop_turn_river: List(str)):
         if self.is_royal_flush(player_hand, flop_turn_river):
@@ -164,8 +164,58 @@ class TexasHoldemGame:
         elif self.is_high_card(player_hand, opponent_hands):
             return True
         else:
-            return False
+            return False'''
+    
+    # Determine if a player's hand is a Royal Flush win
+    # Example of a valid Royal Flush win:
+    #  player_hand: ["As", "Ks"]
+    #  flop_turn_river: ["Js", "Qs", "9d", "Ts", "7c"]
+    #   player wins with As, Ks, Qs, Js, Ts
+    def is_royal_flush(self, player_hand: List[str], flop_turn_river: List[str]):
+        # Get a set of the ranks and suits of the player hand and table (flop, turn, river) cards
+        player_hand_set = set(player_hand)
+        flop_turn_river_set = set(flop_turn_river)
 
+        # Define the all possible Royal Flush combinations
+        royal_flush_ranks = {"A", "K", "Q", "J", "T"}
+        royal_flush_suits = {"s", "c", "h", "d"}
+
+        # Check if the player's hand contains the required cards to win with a Royal Flush
+        for suit in royal_flush_suits:
+            # For this suit, generate a Royal Flush hand
+            royal_flush_hand = set([rank + suit for rank in royal_flush_ranks])
+
+            # If the royal flush hand exists within the player's hand set + the flop, turn, river set, return True
+            if royal_flush_hand.issubset(player_hand_set.union(flop_turn_river_set)):
+                return True
+        
+        # If no Royal Flush hand was found, return false
+        return False
+
+
+    # Return only the ranks from a list of cards
+    # ["Ks", "3d"] --> ["K", "3"]]
+    def get_ranks(self, cards: List[str]):
+        ranks_only = []
+
+        # Iterate through the cards and extract the ranks to store in the ranks_only list
+        for card in cards:
+            rank = card[:-1]  # Extract the rank (all characters except the last one)
+            ranks_only.append(rank)
+
+        return ranks_only
+    
+    # Return only the suits from a list of cards
+    # ["Ks", "3d"] --> ["s", "d"]]
+    def get_suits(self, cards: List[str]):
+        suits_only = []
+
+        # Iterate through the cards and extract the ranks to store in the suits_only list
+        for card in cards:
+            rank = card[-1]  # Extract the rank (all characters except the last one)
+            suits_only.append(rank)
+
+        return suits_only       
 
 
 
@@ -177,12 +227,6 @@ myHoldemGame.set_num_of_opponents(1)
 myHoldemGame.set_player_hand(["As", "Th"])
 myHoldemGame.set_num_of_sims(100000)
 
-opponent_hand = myHoldemGame.poker_expected_value()
-print(opponent_hand[0])
-print(opponent_hand[1])
-print(opponent_hand[2])
-print(opponent_hand[3])
-print(opponent_hand[4])
-
-
-
+player_hand = ["3c", "Jd"]
+ftr = ["Kd", "Qd", "Td", "Ad", "3c"]
+print(myHoldemGame.is_royal_flush(player_hand, ftr))
