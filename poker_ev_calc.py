@@ -322,18 +322,7 @@ class TexasHoldemGame:
         # If no Royal Flush hand was found, return false
         return False
     
-
-    # Convert's a card's rank into an integer to assist in comparing the ranks of different cards.
-    # Params:
-    #   rank (str): Rank of a card. Examples: "K", "3", "A", "7", ...
-    def rank_to_int(self, rank: str) -> int:
-        # Define a mapping of ranks to their respective integer
-        rank_mapping = {"2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "T": 10, "J": 11, "Q": 12, "K": 13, "A": 14}
-
-        # Convert the rank string to an integer using the mapping
-        return rank_mapping.get(rank, 0)  # 0 is returned if the rank is not recognized
-
-    
+ 
     # Determine if a player's hand is a 3-of-a-kind win, which is 3 cards of the same rank.
     # Example of a valid 3-of-a-kind win:
     #  player_hand: ["Jd", "3s"]
@@ -420,6 +409,7 @@ class TexasHoldemGame:
         # Return the rank_count dictionary
         return rank_count
     
+    
     # Counts the occurence of each suit in a set of cards.
     # Example:
     #  Cards: ["Ts", "Td", "Ah", "3s", "4c", "Jd", "Td"]
@@ -454,6 +444,7 @@ class TexasHoldemGame:
 
         return ranks_only
     
+
     # Return only the suits from a list of cards
     # ["Ks", "3d"] --> ["s", "d"]]
     def get_suits(self, cards: List[str]):
@@ -467,6 +458,15 @@ class TexasHoldemGame:
         return suits_only       
 
 
+    # Convert's a card's rank into an integer to assist in comparing the ranks of different cards.
+    # Params:
+    #   rank (str): Rank of a card. Examples: "K", "3", "A", "7", ...
+    def rank_to_int(self, rank: str) -> int:
+        # Define a mapping of ranks to their respective integer
+        rank_mapping = {"2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "T": 10, "J": 11, "Q": 12, "K": 13, "A": 14}
+
+        # Convert the rank string to an integer using the mapping
+        return rank_mapping.get(rank, 0)  # 0 is returned if the rank is not recognized
 
 
 
