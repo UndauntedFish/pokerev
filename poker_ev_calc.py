@@ -203,7 +203,7 @@ class TexasHoldemGame:
     
 
     # Determine if a player's hand is a 4-of-a-kind win, which is 4 cards of the same rank.
-    # Example of a valid 3-of-a-kind win:
+    # Example of a valid 4-of-a-kind win:
     #  player_hand: ["Jd", "Ts"]
     #  flop_turn_river: ["Th", "Td", "", "3s", "Tc"]
     #   player wins with Ts, Th, Td, Tc
@@ -245,7 +245,7 @@ class TexasHoldemGame:
 
     
     # Determine if a player's hand is a 2-pair win, which is 2 cards of the same rank occuring twice.
-    # Example of a valid 1-pair win:
+    # Example of a valid 2-pair win:
     #  player_hand: ["Jd", "Ts"]
     #  flop_turn_river: ["Ts", "Td", "Jd", "3s", "4c"]
     #   player wins with Jd, Ts
