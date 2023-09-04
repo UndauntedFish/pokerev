@@ -166,7 +166,7 @@ class TexasHoldemGame:
         else:
             return False'''
     
-    # Determine if a player's hand is a Royal Flush win
+    # Determine if a player's hand is a Royal Flush win, which is an Ace, King, Queen, Jack, and 10 of the same suit.
     # Example of a valid Royal Flush win:
     #  player_hand: ["As", "Ks"]
     #  flop_turn_river: ["Js", "Qs", "9d", "Ts", "7c"]
@@ -176,7 +176,7 @@ class TexasHoldemGame:
         player_hand_set = set(player_hand)
         flop_turn_river_set = set(flop_turn_river)
 
-        # Define the all possible Royal Flush combinations
+        # Define the all possible Royal Flush rank and suits
         royal_flush_ranks = {"A", "K", "Q", "J", "T"}
         royal_flush_suits = {"s", "c", "h", "d"}
 
@@ -191,7 +191,124 @@ class TexasHoldemGame:
         
         # If no Royal Flush hand was found, return false
         return False
+    
+    # Determine if a player's hand is a Straight Flush win, which is any 5 card sequence in the same suit and are consecutive.
+    # Example of a valid Straight Flush win:
+    #  player_hand: ["Jd", "Td"]
+    #  flop_turn_river: ["3s", "8d", "9d", "Ts", "7d"]
+    #   player wins with Jd, Td, 9d, 8d, 7d
+    def is_straight_flush(self, player_hand: List[str], flop_turn_river: List[str]):
+        # Implement after is_flush() and is_straight() has been implemented to use those methods to simplify things here
+        return False
+    
 
+    # Determine if a player's hand is a 4-of-a-kind win, which is 4 cards of the same rank.
+    # Example of a valid 3-of-a-kind win:
+    #  player_hand: ["Jd", "Ts"]
+    #  flop_turn_river: ["Th", "Td", "", "3s", "Tc"]
+    #   player wins with Ts, Th, Td, Tc
+    def is_four_of_a_kind(self, player_hand: List[str], flop_turn_river: List[str]) -> bool:
+        # Combine the player_hand and flop_turn_river lists
+        hand_and_table_cards = player_hand + flop_turn_river
+
+        # Create a dictionary to count the occurences of each rank
+        rank_count = self.count_ranks(hand_and_table_cards)
+        
+        # Check if there is any rank with a count of 4 (indicating a four-of-a-kind)
+        for count in rank_count.values():
+            if count == 4:
+                return True
+        
+        # Return false if no pair was found
+        return False
+    
+    
+    # Determine if a player's hand is a 3-of-a-kind win, which is 3 cards of the same rank.
+    # Example of a valid 3-of-a-kind win:
+    #  player_hand: ["Jd", "3s"]
+    #  flop_turn_river: ["Ts", "Td", "Jd", "3s", "Tc"]
+    #   player wins with Ts, Td, Tc
+    def is_three_of_a_kind(self, player_hand: List[str], flop_turn_river: List[str]) -> bool:
+        # Combine the player_hand and flop_turn_river lists
+        hand_and_table_cards = player_hand + flop_turn_river
+
+        # Create a dictionary to count the occurences of each rank
+        rank_count = self.count_ranks(hand_and_table_cards)
+        
+        # Check if there is any rank with a count of 3 (indicating a three-of-a-kind)
+        for count in rank_count.values():
+            if count == 3:
+                return True
+        
+        # Return false if no pair was found
+        return False
+
+    
+    # Determine if a player's hand is a 2-pair win, which is 2 cards of the same rank occuring twice.
+    # Example of a valid 1-pair win:
+    #  player_hand: ["Jd", "Ts"]
+    #  flop_turn_river: ["Ts", "Td", "Jd", "3s", "4c"]
+    #   player wins with Jd, Ts
+    def is_two_pair(self, player_hand: List[str], flop_turn_river: List[str]) -> bool:
+        # Combine the player_hand and flop_turn_river lists
+        hand_and_table_cards = player_hand + flop_turn_river
+
+        # Create a dictionary to count the occurrences of each rank
+        rank_count = self.count_ranks(hand_and_table_cards)
+
+        # Check if there are two different pairs of ranks occurring twice
+        pair_count = 0
+        for count in rank_count.values():
+            if count == 2:
+                pair_count += 1
+            if pair_count == 2:
+                return True
+
+        return False
+    
+    
+    # Determine if a player's hand is a 1-pair win, which is 2 cards of the same rank.
+    # Example of a valid 1-pair win:
+    #  player_hand: ["Jd", "Td"]
+    #  flop_turn_river: ["Ts", "Td", "Ah", "3s", "4c"]
+    #   player wins with Td, Td
+    def is_pair(self, player_hand: List[str], flop_turn_river: List[str]):
+        # Combine the player_hand and flop_turn_river lists
+        hand_and_table_cards = player_hand + flop_turn_river
+
+        # Create a dictionary to count the occurences of each rank
+        rank_count = self.count_ranks(hand_and_table_cards)
+        
+        # Check if there is any rank with a count of 2 (indicating a pair)
+        for count in rank_count.values():
+            if count == 2:
+                return True
+        
+        # Return false if no pair was found
+        return False
+
+
+    # Counts the occurence of each rank in a set of cards.
+    # Example:
+    #  Cards: ["Ts", "Td", "Ah", "3s", "4c", "Jd", "Td"]
+    #  count_ranks will return {("T", 3), ("A", 1), ("3", 1), ("4", 1), ("J", 1)}
+    def count_ranks(self, cards: List[str]):
+
+        # Create a dictionary to count the occurences of each rank
+        rank_count = {}
+
+        # Count the ranks in the player's hand and table
+        for card in cards:
+            rank = card[:-1] # Removes the last element from the string, turning "9c" into "9"
+            
+            if rank in rank_count:
+                rank_count[rank] += 1
+            else:
+                rank_count[rank] = 1
+        
+        # Return the rank_count dictionary
+        return rank_count
+            
 
     # Return only the ranks from a list of cards
     # ["Ks", "3d"] --> ["K", "3"]]
@@ -228,5 +345,9 @@ myHoldemGame.set_player_hand(["As", "Th"])
 myHoldemGame.set_num_of_sims(100000)
 
 player_hand = ["3c", "Jd"]
-ftr = ["Kd", "Qd", "Td", "Ad", "3c"]
+ftr = ["Kd", "Qd", "4s", "3h", "3d"]
 print(myHoldemGame.is_royal_flush(player_hand, ftr))
+print(myHoldemGame.is_four_of_a_kind(player_hand, ftr))
+print(myHoldemGame.is_three_of_a_kind(player_hand, ftr))
+print(myHoldemGame.is_two_pair(player_hand, ftr))
+print(myHoldemGame.is_pair(player_hand, ftr))
