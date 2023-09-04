@@ -192,6 +192,7 @@ class TexasHoldemGame:
         # If no Royal Flush hand was found, return false
         return False
     
+
     # Determine if a player's hand is a Straight Flush win, which is any 5 card sequence in the same suit and are consecutive.
     # Example of a valid Straight Flush win:
     #  player_hand: ["Jd", "Td"]
@@ -205,7 +206,7 @@ class TexasHoldemGame:
     # Determine if a player's hand is a 4-of-a-kind win, which is 4 cards of the same rank.
     # Example of a valid 4-of-a-kind win:
     #  player_hand: ["Jd", "Ts"]
-    #  flop_turn_river: ["Th", "Td", "", "3s", "Tc"]
+    #  flop_turn_river: ["Th", "Td", "4s", "3s", "Tc"]
     #   player wins with Ts, Th, Td, Tc
     def is_four_of_a_kind(self, player_hand: List[str], flop_turn_river: List[str]) -> bool:
         # Combine the player_hand and flop_turn_river lists
@@ -222,6 +223,62 @@ class TexasHoldemGame:
         # Return false if no pair was found
         return False
     
+    
+    # Determine if a player's hand is a straight win, which is any five card with consecutive ranks.
+    # Example of a valid straight win:
+    #  player_hand: ["5c", "Js"]
+    #  flop_turn_river: ["2s", "Qs", "3c", "4h", "6d"]
+    #   player wins with 2s, 3c, 4h, 5c, 6d
+    def is_straight(self, player_hand: List[str], flop_turn_river: List[str]):
+        # Get a list of all the cards in play (table and player's hand)
+        hand_and_table_cards = player_hand + flop_turn_river
+
+        # Extract ranks from all cards
+        hand_and_table_ranks = self.get_ranks(hand_and_table_cards)
+
+        # Convert ranks to integers
+        ranks_int = [self.rank_to_int(rank) for rank in hand_and_table_ranks]
+
+        # Sort the ranks in ascending order
+        sorted_ranks_int = sorted(ranks_int)
+
+        # Check if there are five consecutive ranks
+        consecutive_rank_count = 1 # Initialize the count to 1 to include the current card
+        for i in range (1, len(sorted_ranks_int)):
+            # If the previous rank + 1 is equal to the current rank, increment the consecutive rank counter.
+            if sorted_ranks_int[i - 1] + 1 == sorted_ranks_int[i]:
+                consecutive_rank_count += 1
+                # If you have at least 5 consecutive ranks, return True
+                if consecutive_rank_count >= 5:
+                    return True
+        
+        # If you do not have at least 5 consecutive ranks, return False
+        return False 
+        
+
+        # Check if the player's hand contains the required cards to win with a Royal Flush
+        for suit in royal_flush_suits:
+            # For this suit, generate a Royal Flush hand
+            royal_flush_hand = set([rank + suit for rank in royal_flush_ranks])
+
+            # If the royal flush hand exists within the player's hand set + the flop, turn, river set, return True
+            if royal_flush_hand.issubset(player_hand_set.union(flop_turn_river_set)):
+                return True
+        
+        # If no Royal Flush hand was found, return false
+        return False
+    
+
+    # Convert's a card's rank into an integer to assist in comparing the ranks of different cards.
+    # Params:
+    #   rank (str): Rank of a card. Examples: "K", "3", "A", "7", ...
+    def rank_to_int(self, rank: str) -> int:
+        # Define a mapping of ranks to their respective integer
+        rank_mapping = {"2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "T": 10, "J": 11, "Q": 12, "K": 13, "A": 14}
+
+        # Convert the rank string to an integer using the mapping
+        return rank_mapping.get(rank, 0)  # 0 is returned if the rank is not recognized
+
     
     # Determine if a player's hand is a 3-of-a-kind win, which is 3 cards of the same rank.
     # Example of a valid 3-of-a-kind win:
@@ -345,9 +402,10 @@ myHoldemGame.set_player_hand(["As", "Th"])
 myHoldemGame.set_num_of_sims(100000)
 
 player_hand = ["3c", "Jd"]
-ftr = ["Kd", "Qd", "4s", "3h", "3d"]
+ftr = ["Kd", "Qd", "Ts", "9h", "3d"]
 print(myHoldemGame.is_royal_flush(player_hand, ftr))
 print(myHoldemGame.is_four_of_a_kind(player_hand, ftr))
+print(myHoldemGame.is_straight(player_hand, ftr))
 print(myHoldemGame.is_three_of_a_kind(player_hand, ftr))
 print(myHoldemGame.is_two_pair(player_hand, ftr))
 print(myHoldemGame.is_pair(player_hand, ftr))
