@@ -224,6 +224,36 @@ class TexasHoldemGame:
         return False
     
 
+    # Determine if a player's hand is a full house win, which is a three of a kind combined with a pair (eg. A,A,A,5,5). 
+    # Ties on a full house are broken by the three of a kind, as you cannot have two equal sets of three of a kind in any single deck.
+    # Example of a valid flush win:
+    #  player_hand: ["5c", "Js"]
+    #  flop_turn_river: ["5s", "Jh", "Jc", "Jd", "6d"]
+    #   player wins with Js, Jh, Jc, 5c, 5s
+    def is_full_house(self, player_hand: List[str], flop_turn_river: List[str]):
+        # Get a list of all the cards in play (table and player's hand)
+        hand_and_table_cards = player_hand + flop_turn_river
+
+        # Count the occurences of each rank
+        rank_count = self.count_ranks(hand_and_table_cards)
+
+        # Initialize variables to track the three-of-a-kind and pair ranks
+        three_of_a_kind_rank = None
+        pair_rank = None
+
+        # Iterate through the ranks and determine if there's a three-of-a-kind and a pair
+        for rank, count in rank_count.items():
+            if count == 3:
+                three_of_a_kind_rank = rank
+            elif count == 2:
+                pair_rank = rank
+        
+        # Check if both a three-of-a-kind and a pair were found. Return True if so, False if not.
+        if (three_of_a_kind_rank is not None) and (pair_rank is not None):
+            return True
+        return False
+
+
     # Determine if a player's hand is a flush win, which is any five card with the same suit. The high card determines the winner if two or more people have a flush.
     # Example of a valid flush win:
     #  player_hand: ["5c", "Js"]
@@ -447,11 +477,12 @@ myHoldemGame.set_player_hand(["As", "Th"])
 myHoldemGame.set_num_of_sims(100000)
 
 player_hand = ["3c", "9d"]
-ftr = ["3d", "5d", "7d", "9h", "6d"]
-print(myHoldemGame.is_royal_flush(player_hand, ftr))
-print(myHoldemGame.is_four_of_a_kind(player_hand, ftr))
-print(myHoldemGame.is_flush(player_hand, ftr))
-print(myHoldemGame.is_straight(player_hand, ftr))
-print(myHoldemGame.is_three_of_a_kind(player_hand, ftr))
-print(myHoldemGame.is_two_pair(player_hand, ftr))
-print(myHoldemGame.is_pair(player_hand, ftr))
+ftr = ["3d", "5d", "7d", "9h", "9c"]
+print("Is Royal Flush: " + str(myHoldemGame.is_royal_flush(player_hand, ftr)))
+print("Is Four of a Kind: " + str(myHoldemGame.is_four_of_a_kind(player_hand, ftr)))
+print("Is Full House: " + str(myHoldemGame.is_full_house(player_hand, ftr)))
+print("Is Flush: " + str(myHoldemGame.is_flush(player_hand, ftr)))
+print("Is Straight: " + str(myHoldemGame.is_straight(player_hand, ftr)))
+print("Is Three of a Kind: " + str(myHoldemGame.is_three_of_a_kind(player_hand, ftr)))
+print("Is Two Pair: " + str(myHoldemGame.is_two_pair(player_hand, ftr)))
+print("Is Pair: " + str(myHoldemGame.is_pair(player_hand, ftr)))
