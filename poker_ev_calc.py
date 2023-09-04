@@ -223,7 +223,31 @@ class TexasHoldemGame:
         # Return false if no pair was found
         return False
     
-    
+
+    # Determine if a player's hand is a flush win, which is any five card with the same suit. The high card determines the winner if two or more people have a flush.
+    # Example of a valid flush win:
+    #  player_hand: ["5c", "Js"]
+    #  flop_turn_river: ["2s", "Ts", "7s", "4s", "6d"]
+    #   player wins with 2s, 7s, 4s, Js, Ts
+    def is_flush(self, player_hand: List[str], flop_turn_river: List[str]):
+        # Get a list of all the cards in play (table and player's hand)
+        hand_and_table_cards = player_hand + flop_turn_river
+
+        # Extract all the suits from all cards
+        hand_and_table_suits = self.get_suits(hand_and_table_cards)
+
+        # Count the occurence of each suit and store it in the suit_count dictionary
+        suit_count = self.count_suits(hand_and_table_suits)
+
+        # Check if there are at least 5 cards with the same suit, return True if so
+        for suit, count in suit_count.items():
+            if count >= 5:
+                return True
+        
+        # Return False if there aren't at least 5 cards with the same suit
+        return False
+
+
     # Determine if a player's hand is a straight win, which is any five card with consecutive ranks.
     # Example of a valid straight win:
     #  player_hand: ["5c", "Js"]
@@ -365,6 +389,27 @@ class TexasHoldemGame:
         
         # Return the rank_count dictionary
         return rank_count
+    
+    # Counts the occurence of each suit in a set of cards.
+    # Example:
+    #  Cards: ["Ts", "Td", "Ah", "3s", "4c", "Jd", "Td"]
+    #  count_suits will return {("s", 2), ("d", 3), ("h", 1), ("c", 1)}
+    def count_suits(self, cards: List[str]):
+
+        # Create a dictionary to count the occurences of each suit
+        suit_count = {}
+
+        # Count the ranks in the player's hand and table
+        for card in cards:
+            suit = card[-1] # Gets the last element from the string, turning "9c" into "c"
+            
+            if suit in suit_count:
+                suit_count[suit] += 1
+            else:
+                suit_count[suit] = 1
+        
+        # Return the rank_count dictionary
+        return suit_count
             
 
     # Return only the ranks from a list of cards
@@ -401,10 +446,11 @@ myHoldemGame.set_num_of_opponents(1)
 myHoldemGame.set_player_hand(["As", "Th"])
 myHoldemGame.set_num_of_sims(100000)
 
-player_hand = ["3c", "Jd"]
-ftr = ["Kd", "Qd", "Ts", "9h", "3d"]
+player_hand = ["3c", "9d"]
+ftr = ["3d", "5d", "7d", "9h", "6d"]
 print(myHoldemGame.is_royal_flush(player_hand, ftr))
 print(myHoldemGame.is_four_of_a_kind(player_hand, ftr))
+print(myHoldemGame.is_flush(player_hand, ftr))
 print(myHoldemGame.is_straight(player_hand, ftr))
 print(myHoldemGame.is_three_of_a_kind(player_hand, ftr))
 print(myHoldemGame.is_two_pair(player_hand, ftr))
