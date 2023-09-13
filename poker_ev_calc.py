@@ -199,8 +199,8 @@ class TexasHoldemGame:
     #  flop_turn_river: ["3s", "8d", "9d", "Ts", "7d"]
     #   player wins with Jd, Td, 9d, 8d, 7d
     def is_straight_flush(self, player_hand: List[str], flop_turn_river: List[str]):
-        # Implement after is_flush() and is_straight() has been implemented to use those methods to simplify things here
-        return False
+        # Return true if there is a straight and a flush occuring simultaneously, false otherwise
+        return self.is_straight(player_hand, flop_turn_river) and self.is_flush(player_hand, flop_turn_river)
     
 
     # Determine if a player's hand is a 4-of-a-kind win, which is 4 cards of the same rank.
@@ -209,7 +209,7 @@ class TexasHoldemGame:
     #  flop_turn_river: ["Th", "Td", "4s", "3s", "Tc"]
     #   player wins with Ts, Th, Td, Tc
     def is_four_of_a_kind(self, player_hand: List[str], flop_turn_river: List[str]) -> bool:
-        # Combine the player_hand and flop_turn_river lists
+        # Get a list of all the cards in play (table and player's hand)
         hand_and_table_cards = player_hand + flop_turn_river
 
         # Create a dictionary to count the occurences of each rank
@@ -409,7 +409,7 @@ class TexasHoldemGame:
         # Return the rank_count dictionary
         return rank_count
     
-    
+
     # Counts the occurence of each suit in a set of cards.
     # Example:
     #  Cards: ["Ts", "Td", "Ah", "3s", "4c", "Jd", "Td"]
@@ -477,8 +477,9 @@ myHoldemGame.set_player_hand(["As", "Th"])
 myHoldemGame.set_num_of_sims(100000)
 
 player_hand = ["3c", "9d"]
-ftr = ["3d", "5d", "7d", "9h", "9c"]
+ftr = ["4c", "5c", "Kc", "9h", "6c"]
 print("Is Royal Flush: " + str(myHoldemGame.is_royal_flush(player_hand, ftr)))
+print("Is Straight Flush: " + str(myHoldemGame.is_straight_flush(player_hand, ftr)))
 print("Is Four of a Kind: " + str(myHoldemGame.is_four_of_a_kind(player_hand, ftr)))
 print("Is Full House: " + str(myHoldemGame.is_full_house(player_hand, ftr)))
 print("Is Flush: " + str(myHoldemGame.is_flush(player_hand, ftr)))
