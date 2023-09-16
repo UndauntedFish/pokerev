@@ -75,7 +75,7 @@ class TexasHoldemGame:
         player_hand_is_win = self.hand_is_win(self.player_hand, opponent_hands, flop_turn_river)
 
         # Determine if opponents hand are winning hands
-
+        
 
         return []
     
@@ -143,30 +143,30 @@ class TexasHoldemGame:
             return random.choice(self.deck)
 
     
-    # Determine if a hand is a win
+    # Determine if a hand is a win. Will return 1-10 if it is a win (10 is the best winning hand, 1 is the worst winning hand), and 0 if it is a losing hand.
     def hand_is_win(self, player_hand: List(str), opponent_hands: List(str), flop_turn_river: List(str)):
         if self.is_royal_flush(player_hand, flop_turn_river):
-            return True
+            return 10
         elif self.is_straight_flush(player_hand, flop_turn_river):
-            return True
+            return 9
         elif self.is_four_of_a_kind(player_hand, flop_turn_river):
-            return True
+            return 8
         elif self.is_full_house(player_hand, flop_turn_river):
-            return True
+            return 7
         elif self.is_flush(player_hand, flop_turn_river):
-            return True
+            return 6
         elif self.is_straight(player_hand, flop_turn_river):
-            return True
+            return 5
         elif self.is_three_of_a_kind(player_hand, flop_turn_river):
-            return True
+            return 4
         elif self.is_two_pair(player_hand, flop_turn_river):
-            return True
+            return 3
         elif self.is_pair(player_hand, flop_turn_river):
-            return True
+            return 2
         elif self.is_high_card(player_hand, opponent_hands):
-            return True
+            return 1
         else:
-            return False
+            return 0
     
 
     # Determine if a player's hand is a Royal Flush win, which is an Ace, King, Queen, Jack, and 10 of the same suit.
