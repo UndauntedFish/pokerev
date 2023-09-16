@@ -72,9 +72,10 @@ class TexasHoldemGame:
         flop_turn_river = self.generate_flop_turn_river(opponent_hands)
 
         # Determine if player hand is a winning hand
-        #player_hand_is_win = hand_is_win(hand, flop_turn_river)
+        player_hand_is_win = self.hand_is_win(self.player_hand, opponent_hands, flop_turn_river)
 
         # Determine if opponents hand are winning hands
+
 
         return []
     
@@ -83,7 +84,7 @@ class TexasHoldemGame:
     #  cards_to_exclude: A list of cards, to exclude from the opponent's simulated hand (for example, you should exclude the cards in your hand).
     def generate_opponent_hand(self, cards_to_exclude: List[str]):
         # Draw the first card
-        first_card = self.draw_random_card()
+        first_card = self.draw_random_card(cards_to_exclude)
         # Remove the first card from the deck
         leftover_deck_set = set(self.deck) - {first_card}
 
@@ -130,6 +131,7 @@ class TexasHoldemGame:
         return [flop_card_1, flop_card_2, flop_card_3, turn_card, river_card]
     
     
+    # Method to draw a random card
     def draw_random_card(self, cards_to_exclude: List[str]):
         # Determine which cards are valid for the draw
         if len(cards_to_exclude > 0):
@@ -166,6 +168,7 @@ class TexasHoldemGame:
         else:
             return False
     
+
     # Determine if a player's hand is a Royal Flush win, which is an Ace, King, Queen, Jack, and 10 of the same suit.
     # Example of a valid Royal Flush win:
     #  player_hand: ["As", "Ks"]
@@ -398,8 +401,9 @@ class TexasHoldemGame:
                 highest_player_rank = int_card_rank
         
         highest_opponent_rank = 0
-        for card_rank in self.get_ranks(opponent_hands):
-            int_card_rank = self.rank_to_int(card_rank)
+        for hand in opponent_hands:
+            for card_rank in self.get_ranks(hand):
+                int_card_rank = self.rank_to_int(card_rank)
 
             if int_card_rank > highest_opponent_rank:
                 highest_player_rank = int_card_rank
@@ -497,6 +501,7 @@ myHoldemGame.set_num_of_sims(100000)
 
 player_hand = ["3c", "9d"]
 ftr = ["4c", "5c", "Kc", "9h", "6c"]
+opponent_hands = ["Ah", "7s"]
 print("Is Royal Flush: " + str(myHoldemGame.is_royal_flush(player_hand, ftr)))
 print("Is Straight Flush: " + str(myHoldemGame.is_straight_flush(player_hand, ftr)))
 print("Is Four of a Kind: " + str(myHoldemGame.is_four_of_a_kind(player_hand, ftr)))
@@ -506,3 +511,5 @@ print("Is Straight: " + str(myHoldemGame.is_straight(player_hand, ftr)))
 print("Is Three of a Kind: " + str(myHoldemGame.is_three_of_a_kind(player_hand, ftr)))
 print("Is Two Pair: " + str(myHoldemGame.is_two_pair(player_hand, ftr)))
 print("Is Pair: " + str(myHoldemGame.is_pair(player_hand, ftr)))
+
+print("Is Winning Hand: " + str(myHoldemGame.hand_is_win(player_hand, opponent_hands, ftr)))
