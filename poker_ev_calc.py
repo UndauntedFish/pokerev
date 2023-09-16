@@ -140,14 +140,14 @@ class TexasHoldemGame:
         else:
             return random.choice(self.deck)
 
-    '''
+    
     # Determine if a hand is a win
     def hand_is_win(self, player_hand: List(str), opponent_hands: List(str), flop_turn_river: List(str)):
         if self.is_royal_flush(player_hand, flop_turn_river):
             return True
         elif self.is_straight_flush(player_hand, flop_turn_river):
             return True
-        elif self.is_4_of_a_kind(player_hand, flop_turn_river):
+        elif self.is_four_of_a_kind(player_hand, flop_turn_river):
             return True
         elif self.is_full_house(player_hand, flop_turn_river):
             return True
@@ -155,16 +155,16 @@ class TexasHoldemGame:
             return True
         elif self.is_straight(player_hand, flop_turn_river):
             return True
-        elif self.is_3_of_a_kind(player_hand, flop_turn_river):
+        elif self.is_three_of_a_kind(player_hand, flop_turn_river):
             return True
-        elif self.is_2_pair(player_hand, flop_turn_river):
+        elif self.is_two_pair(player_hand, flop_turn_river):
             return True
         elif self.is_pair(player_hand, flop_turn_river):
             return True
         elif self.is_high_card(player_hand, opponent_hands):
             return True
         else:
-            return False'''
+            return False
     
     # Determine if a player's hand is a Royal Flush win, which is an Ace, King, Queen, Jack, and 10 of the same suit.
     # Example of a valid Royal Flush win:
@@ -386,6 +386,25 @@ class TexasHoldemGame:
         
         # Return false if no pair was found
         return False
+
+
+    # Determine if a player's hand has a higher ranking card than the opponents' hands
+    def is_high_card(self, player_hand: List[str], opponent_hands: List[str]):
+        highest_player_rank = 0
+        for card_rank in self.get_ranks(player_hand):
+            int_card_rank = self.rank_to_int(card_rank)
+
+            if int_card_rank > highest_player_rank:
+                highest_player_rank = int_card_rank
+        
+        highest_opponent_rank = 0
+        for card_rank in self.get_ranks(opponent_hands):
+            int_card_rank = self.rank_to_int(card_rank)
+
+            if int_card_rank > highest_opponent_rank:
+                highest_player_rank = int_card_rank
+
+        return True if highest_player_rank > highest_opponent_rank else False
 
 
     # Counts the occurence of each rank in a set of cards.
