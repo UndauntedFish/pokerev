@@ -6,12 +6,12 @@ class TexasHoldemGame:
     # Constructor
     def __init__(self) -> None:
         self.deck = []
-        self.num_of_opponents = None
+        self.num_of_opponents = 6
         self.player_hand = []
         self.community_cards = []
         self.your_contribution_to_bot = None
         self.pot_size = None
-        self.num_of_sims = None
+        self.num_of_sims = 100
         self.generate_deck()
 
 
@@ -55,32 +55,67 @@ class TexasHoldemGame:
 
     # Method to calculate the expected value of your hand
     def poker_expected_value(self):
-        # Simulate possible outcomes
-        win_count = 0
         
-        # Simulate the opponents' hands.
-            # Example for 3 players:
-            #  [0, ["As", "Ad"]]
-            #  [1, ["Ks", "3s"]]
-            #  [2, ["4h", "2d"]]
-        opponent_hands = []
-        for _ in range(self.num_of_sims): 
-            for _ in range(self.num_of_opponents):
-                opponent_hands.append(self.generate_opponent_hand(self.player_hand))
-
-        # Simulate flop, turn, and river cards
-        flop_turn_river = self.generate_flop_turn_river(opponent_hands)
-
-        # Determine if player hand is a winning hand
-        player_hand_is_win = self.hand_is_win(self.player_hand, opponent_hands, flop_turn_river)
-
-        # Determine if opponents hand are winning hands
         
+
+
 
         return []
     
-    
-    # Method to draw a random hand for an opponent
+    # Returns a number from 0.0 - 1.0, representing the winrate of the player's hand
+    def get_player_hand_winrate(self):
+        win_count = 0
+
+        # Simulate possible outcomes
+        for i in range(self.num_of_sims):
+            # Simulate the opponents' hands.
+                # Example for 3 players:
+                #  [0, ["As", "Ad", 0]]
+                #  [1, ["Ks", "3s", 0]]
+                #  [2, ["4h", "2d", 0]]
+            opponent_hands = []
+            for _ in range(self.num_of_sims): 
+                for _ in range(self.num_of_opponents):
+                    opponent_hands.append(self.generate_opponent_hand(self.player_hand))
+
+
+            # Simulate flop, turn, and river cards
+            flop_turn_river = self.generate_flop_turn_river(opponent_hands)
+
+
+            # Determine if player hand is a winning hand. 
+            # Will return a int 1-10 if it is a winning hand, 0 if it isnt.
+            # The higher the int, the stronger the winning hand
+            player_hand_is_win = self.hand_is_win(self.player_hand, opponent_hands, flop_turn_river)
+
+
+            # Determine if opponents hand are winning hands
+            player_and_opponent_cards = player_hand + opponent_hands
+            opponent_hand_is_win = 0
+
+            for opponent_hand in opponent_hands:
+                # Figure out what's left between the player's and opponents' cards if we remove the opponent's hand we're trying to evaluate
+                leftover_cards = []
+                for card in player_and_opponent_cards:
+                    if card not in opponent_hand:
+                        leftover_cards.append(card)
+                
+                # Determine if the opponent's hand is a winning hand. 
+                # Will return a int 1-10 if it is a winning hand, 0 if it isnt.
+                # The higher the int, the stronger the winning hand
+                this_opponent_hand_is_win = self.hand_is_win(opponent_hand, leftover_cards, flop_turn_river)
+                if this_opponent_hand_is_win > opponent_hand_is_win:
+                    opponent_hand_is_win = this_opponent_hand_is_win
+            
+
+            # Increment the win counter if the player won
+            if player_hand_is_win > opponent_hand_is_win:
+                win_count += 1
+            
+        return win_count / self.num_of_sims
+
+
+    # Method to draw a random hand for an opponent in the format: [first card, second card, 0], where 0 is the win/loss status of the hand.
     #  cards_to_exclude: A list of cards, to exclude from the opponent's simulated hand (for example, you should exclude the cards in your hand).
     def generate_opponent_hand(self, cards_to_exclude: List[str]):
         # Draw the first card
@@ -92,7 +127,7 @@ class TexasHoldemGame:
         second_card = random.choice(list(leftover_deck_set))
         
         # Return the opponent's hand
-        return [first_card, second_card]
+        return [first_card, second_card, 0]
     
     
     # Method to generate the flop, turn, and river cards, given the player's hand and opponents' hands
